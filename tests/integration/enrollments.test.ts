@@ -5,20 +5,30 @@ import httpStatus from 'http-status';
 import * as jwt from 'jsonwebtoken';
 import supertest from 'supertest';
 
+<<<<<<< HEAD
 import { createEnrollmentWithAddress, createUser, createhAddressWithCEP as createAddressWithCEP } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 import { prisma } from '@/config';
 import app, { init, close } from '@/app';
+=======
+import { createEnrollmentWithAddress, createUser, createhAddressWithCEP } from '../factories';
+import { cleanDb, generateValidToken } from '../helpers';
+import { prisma } from '@/config';
+import app, { init } from '@/app';
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 
 beforeAll(async () => {
   await init();
   await cleanDb();
 });
 
+<<<<<<< HEAD
 afterAll(async () => {
   await close();
 });
 
+=======
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 const server = supertest(app);
 
 describe('GET /enrollments', () => {
@@ -86,7 +96,11 @@ describe('GET /enrollments', () => {
 describe('GET /enrollments/cep', () => {
   it('should respond with status 200 when CEP is valid', async () => {
     const response = await server.get('/enrollments/cep?cep=04538132');
+<<<<<<< HEAD
     const address = createAddressWithCEP();
+=======
+    const address = createhAddressWithCEP();
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual(address);
@@ -94,6 +108,10 @@ describe('GET /enrollments/cep', () => {
 
   it('should respond with status 204 when CEP is invalid', async () => {
     const response = await server.get('/enrollments/cep?cep=00');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
     expect(response.status).toBe(httpStatus.NO_CONTENT);
   });
 });
@@ -199,7 +217,11 @@ describe('POST /enrollments', () => {
         birthday: faker.date.past().toISOString(),
         phone: '(21) 98999-9999',
         address: {
+<<<<<<< HEAD
           cep: '00000-000',
+=======
+          cep: '0',
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
           street: faker.address.streetName(),
           city: faker.address.city(),
           number: faker.datatype.number().toString(),
@@ -209,7 +231,11 @@ describe('POST /enrollments', () => {
         },
       });
 
+<<<<<<< HEAD
       it('should respond with status 400', async () => {
+=======
+      it('should respond with status 400 and create new enrollment if there is not any', async () => {
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
         const body = generateInvalidBody();
         const token = await generateValidToken();
 

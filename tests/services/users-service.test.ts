@@ -2,19 +2,28 @@ import faker from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 import { createUser as createUserSeed, createEvent as createEventSeed } from '../factories';
 import { cleanDb } from '../helpers';
+<<<<<<< HEAD
 import { init, close } from '@/app';
 import { prisma } from '@/config';
 import userService, { duplicatedEmailError } from '@/services/users-service';
+=======
+import userService, { duplicatedEmailError } from '@/services/users-service';
+import { prisma } from '@/config';
+import { init } from '@/app';
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 
 beforeAll(async () => {
   await init();
   await cleanDb();
 });
 
+<<<<<<< HEAD
 afterAll(async () => {
   await close();
 });
 
+=======
+>>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 describe('createUser', () => {
   it('should throw duplicatedUserError if there is a user with given email', async () => {
     const existingUser = await createUserSeed();
