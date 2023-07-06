@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Request, Response, NextFunction } from 'express';
-=======
 import { NextFunction, Request, Response } from 'express';
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 import httpStatus from 'http-status';
 import { ApplicationError } from '@/protocols';
 
@@ -10,11 +6,7 @@ export function handleApplicationErrors(
   err: ApplicationError | Error,
   _req: Request,
   res: Response,
-<<<<<<< HEAD
-  next: NextFunction,
-=======
   _next: NextFunction,
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 ) {
   if (err.name === 'CannotEnrollBeforeStartDateError') {
     return res.status(httpStatus.BAD_REQUEST).send({
@@ -34,15 +26,12 @@ export function handleApplicationErrors(
     });
   }
 
-<<<<<<< HEAD
-=======
   if (err.name === 'UnauthorizedError') {
     return res.status(httpStatus.UNAUTHORIZED).send({
       message: err.message,
     });
   }
 
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
   if (err.name === 'NotFoundError') {
     return res.status(httpStatus.NOT_FOUND).send({
       message: err.message,

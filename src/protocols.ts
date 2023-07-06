@@ -7,10 +7,6 @@ export type ViaCEPAddress = {
   logradouro: string;
   complemento: string;
   bairro: string;
-<<<<<<< HEAD
-  cidade: string;
-  uf: string;
-=======
   localidade: string;
   uf: string;
 };
@@ -39,7 +35,6 @@ export type AddressEnrollment = {
   cidade: string;
   uf: string;
   error?: string;
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 };
 
 export type RequestError = {

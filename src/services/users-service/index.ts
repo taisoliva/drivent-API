@@ -2,13 +2,8 @@ import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import eventsService from '../events-service';
 import { duplicatedEmailError } from './errors';
-<<<<<<< HEAD
-import { cannotEnrollBeforeStartDateError } from '@/errors';
-import userRepository from '@/repositories/user-repository';
-=======
 import userRepository from '@/repositories/user-repository';
 import { cannotEnrollBeforeStartDateError } from '@/errors';
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 
 export async function createUser({ email, password }: CreateUserParams): Promise<User> {
   await canEnrollOrFail();

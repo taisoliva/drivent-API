@@ -29,27 +29,14 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 }
 
 export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
-<<<<<<< HEAD
-
-  const cep = req.query.cep as string
-
-  if(cep.length < 8){
-    return res.sendStatus(httpStatus.NO_CONTENT)
-  }
-=======
   const { cep } = req.query as Record<string, string>;
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
 
   try {
     const address = await enrollmentsService.getAddressFromCEP(cep);
     res.status(httpStatus.OK).send(address);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-<<<<<<< HEAD
-      return res.sendStatus(httpStatus.NO_CONTENT);
-=======
-      return res.send(httpStatus.NO_CONTENT);
->>>>>>> 16c5480c3d328c63006f5f18b3b42aa9a36b220a
+      return res.sendStatus(httpStatus.NO_CONTENT)
     }
   }
 }
