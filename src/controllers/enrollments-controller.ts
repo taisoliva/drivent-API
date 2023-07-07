@@ -5,7 +5,7 @@ import enrollmentsService from '@/services/enrollments-service';
 
 export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-
+  
   try {
     const enrollmentWithAddress = await enrollmentsService.getOneWithAddressByUserId(userId);
 
