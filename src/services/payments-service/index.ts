@@ -9,14 +9,19 @@ async function getPayments(userId: number, ticketId : number | typeof NaN ){
         throw badRequestError()
     }
 
-    const isTicketUser = await ticketsRepository.getTicketById(ticketId, userId)
-    if(!isTicketUser) throw unauthorizedError()
+    const isTicketUser = await ticketsRepository.getTicketByIdWithUser(ticketId, userId)
+    const isTicketExisted = await ticketsRepository.getTicketById(ticketId)
+
+    if(!isTicketUser || !isTicketExisted){
+        if(!isTicketExisted){
+            throw notFoundError()
+        } else {
+            throw unauthorizedError()
+        }
+    }
+  
 
     const ticketPayment = await paymentsRepository.getPaymentsbyId(ticketId)
-    if(!ticketPayment) throw notFoundError()
-
-    
-
     return ticketPayment
    
 }
