@@ -1,5 +1,6 @@
 import { prisma } from "@/config"
-import { Ticket, TicketType } from "@/protocols"
+import { TicketType } from "@/protocols"
+import { Ticket } from "@prisma/client"
 
 async function getTicketType(): Promise<TicketType[]> {
     return prisma.ticketType.findMany()
@@ -23,11 +24,18 @@ async function getTicketByUser(enrollmentId : number) {
     
 }
 
+async function createTicket(data : Omit <Ticket, "id"> ) {
+    return prisma.ticket.create({
+       data
+    });
+}
+
 
 const ticketsRepository ={
     getTicketType,
     getTicketTypeById,
-    getTicketByUser
+    getTicketByUser,
+    createTicket
 }
 
 export default ticketsRepository

@@ -6,7 +6,7 @@ const ticktesRouter = Router()
 
 ticktesRouter
     .all('/*', authenticateToken)
-    .post('/types', createTicket)
+    .post('/', createTicket)
     .get('/types', getTicketType)
     .get('/', getTicketByUser)
 

@@ -5,8 +5,23 @@ import ticketsService from "@/services/tickets-service";
 
 
 export async function createTicket(req: AuthenticatedRequest, res:Response){
+    
+    const {userId} = req
+    const {ticketTypeId} = req.body
+
+    try{
+        const result = await ticketsService.createTicket(userId, ticketTypeId)
+        return res.status(httpStatus.CREATED).send(result)
+    }catch(error){
+        if(error.name === "NotFoundError"){
+            return res.status(httpStatus.NOT_FOUND).send(error.message)
+        } else if(error.name === "BadRequestError") {
+            return res.sendStatus(httpStatus.BAD_REQUEST)
+        }
+    }
 
 }
+    
 
 export async function getTicketType(req: Request, res: Response){
     try{

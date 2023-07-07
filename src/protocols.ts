@@ -56,14 +56,3 @@ export type TicketType = {
   
 }
 
-export type Ticket = {
-  
-    id: number;
-    status: string;
-    ticketTypeId: number;
-    enrollmentId: number;
-    TicketType: object;
-    createdAt: Date;
-    updatedAt: Date;
-  
-}

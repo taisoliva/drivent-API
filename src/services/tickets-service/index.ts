@@ -1,7 +1,8 @@
-import { notFoundError } from "@/errors"
-import { Ticket, TicketType } from "@/protocols"
+import { badRequestError, notFoundError } from "@/errors"
+import { TicketType } from "@/protocols"
 import ticketsRepository from "@/repositories/tickets-repository"
 import enrollmentsService from "../enrollments-service"
+import { Ticket, TicketStatus } from "@prisma/client"
 
 async function getTicketType() {
     const ticketType = await ticketsRepository.getTicketType() 
@@ -17,24 +18,55 @@ async function getTicketByUser(userId : number) {
 
     const ticketType = await ticketsRepository.getTicketTypeById(ticketUser.ticketTypeId) as TicketType
 
-    const result : Ticket = {
+    const result = {
         id:ticketUser.id,
         status:ticketUser.status,
+        TicketType:ticketType,
         ticketTypeId:ticketUser.ticketTypeId,
         enrollmentId:ticketUser.enrollmentId,
-        TicketType:ticketType,
         createdAt:ticketUser.createdAt,
         updatedAt:ticketUser.updatedAt
     }
 
-    console.log(result)
     return result
+}
+
+async function createTicket(userId : number, ticketTypeId : number) {
+    
+    const enrollment = await enrollmentsService.getOneWithAddressByUserId(userId)
+    
+    if(!ticketTypeId) throw badRequestError()
+
+    const ticketType = await ticketsRepository.getTicketTypeById(ticketTypeId)
+
+    const newTicket : Omit<Ticket, "id"> = {
+        enrollmentId:enrollment.id,
+        status: TicketStatus.RESERVED,
+        ticketTypeId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+    }
+
+   const createdTicket = await ticketsRepository.createTicket(newTicket)
+
+    const ticketInfo  = {
+        id:createdTicket.id,
+        status:createdTicket.status,
+        TicketType:ticketType,
+        ticketTypeId:createdTicket.ticketTypeId,
+        enrollmentId:createdTicket.enrollmentId,
+        createdAt:createdTicket.createdAt,
+        updatedAt:createdTicket.updatedAt
+    }
+
+    return ticketInfo
 }
 
 
 const ticketsService = {
     getTicketType,
-    getTicketByUser
+    getTicketByUser,
+    createTicket
 }
 
 export default ticketsService
