@@ -46,6 +46,18 @@ async function createTicket(data : Omit <Ticket, "id"> ) {
     });
 }
 
+async function updataStatusTicket(id : number) {
+    return prisma.ticket.update({
+        where : {
+            id
+        }, 
+        data : {
+            status: 'PAID'
+        }
+    })
+    
+}
+
 
 const ticketsRepository ={
     getTicketType,
@@ -53,7 +65,8 @@ const ticketsRepository ={
     getTicketByUser,
     getTicketById,
     getTicketByIdWithUser,
-    createTicket
+    createTicket,
+    updataStatusTicket
 }
 
 export default ticketsRepository

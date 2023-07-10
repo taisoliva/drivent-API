@@ -9,8 +9,15 @@ async function getPaymentsbyId(ticketId : number) : Promise<Payment>{
     }) 
 }
 
+async function createPayment(data : Omit<Payment, "id">) {
+    return prisma.payment.create({
+        data
+    })
+}
+
 const paymentsRepository = {
-    getPaymentsbyId
+    getPaymentsbyId,
+    createPayment
 }
 
 export default paymentsRepository
