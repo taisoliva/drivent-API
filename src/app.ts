@@ -13,7 +13,11 @@ import {
   authenticationRouter,
   eventsRouter,
   enrollmentsRouter,
+<<<<<<< HEAD
   ticktesRouter,
+=======
+  ticketsRouter,
+>>>>>>> 37ba8f70aa6076dc5099fa09f8c936fdb684f1c5
   paymentsRouter,
 } from '@/routers';
 
@@ -26,7 +30,11 @@ app
   .use('/auth', authenticationRouter)
   .use('/event', eventsRouter)
   .use('/enrollments', enrollmentsRouter)
+<<<<<<< HEAD
   .use('/tickets', ticktesRouter)
+=======
+  .use('/tickets', ticketsRouter)
+>>>>>>> 37ba8f70aa6076dc5099fa09f8c936fdb684f1c5
   .use('/payments', paymentsRouter)
   .use(handleApplicationErrors);
 
