@@ -5,7 +5,7 @@ import enrollmentsService from '@/services/enrollments-service';
 
 export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-  
+
   try {
     const enrollmentWithAddress = await enrollmentsService.getOneWithAddressByUserId(userId);
 
@@ -36,7 +36,7 @@ export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response
     res.status(httpStatus.OK).send(address);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-      return res.sendStatus(httpStatus.NO_CONTENT)
+      return res.sendStatus(httpStatus.NO_CONTENT);
     }
   }
 }
