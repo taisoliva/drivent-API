@@ -47,7 +47,6 @@ export type RequestError = {
   message: string;
 };
 
-<<<<<<< HEAD
 export type TicketType = {
   id: number;
   name: string;
@@ -56,7 +55,9 @@ export type TicketType = {
   includesHotel: boolean;
   createdAt: Date;
   updatedAt: Date;
-=======
+
+}
+
 export type CreateTicketParams = Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type CardPaymentParams = {
@@ -71,5 +72,4 @@ export type PaymentParams = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type InputTicketBody = {
   ticketTypeId: number;
->>>>>>> 37ba8f70aa6076dc5099fa09f8c936fdb684f1c5
 };
