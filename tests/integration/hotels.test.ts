@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken"
 import supertest from 'supertest';
 import { cleanDb, generateValidToken } from "../helpers";
-import { createEnrollmentWithAddress, createHotel, createPayment, createRoom, createTicket, createTicketType, createTicketTypeNotHotel, createUser, generateCreditCardData } from "../factories";
+import { createEnrollmentWithAddress, createHotel, createPayment, createRoom, createTicket, createTicketType, createTicketTypeNotHotel, createTicketTypeWithHotel, createUser, generateCreditCardData } from "../factories";
 import { TicketStatus } from "@prisma/client";
 import { prisma } from "@/config";
 
@@ -62,13 +62,26 @@ describe("GET /hotels", () => {
       expect(response.status).toBe(httpStatus.NOT_FOUND)
     })
 
+    it("should respond with status 404 when hotels doesnt exists", async ()=>{
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketTypeWithHotel()
+      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID)
+      const payment = await createPayment(ticket.id, ticketType.price)
+
+      const response = await server.get("/hotels").set('Authorization', `Bearer ${token}`)
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND)
+    })
+
     it("should respond with status 402 when payment doesnt confirm", async ()=>{
       const user = await createUser()
       const token = await generateValidToken(user)
       const enrollment = await createEnrollmentWithAddress(user)
       const ticketType = await createTicketType()
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED)
-      console.log(ticket)
+      
 
       const response = await server.get("/hotels").set('Authorization', `Bearer ${token}`)
       expect(response.status).toBe(httpStatus.PAYMENT_REQUIRED)
@@ -89,7 +102,7 @@ describe("GET /hotels", () => {
       const user = await createUser()
       const token = await generateValidToken(user)
       const enrollment = await createEnrollmentWithAddress(user)
-      const ticketType = await createTicketType()
+      const ticketType = await createTicketTypeWithHotel()
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID)
       const payment = await createPayment(ticket.id, ticketType.price)
 

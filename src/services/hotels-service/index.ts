@@ -2,7 +2,7 @@ import repositoryHotel from "@/repositories/hotels-repository"
 import enrollmentsService from "../enrollments-service"
 import ticketsService from "../tickets-service";
 import { TicketStatus } from "@prisma/client";
-import { paymentRequired } from "@/errors";
+import { notFoundError, paymentRequired } from "@/errors";
 import ticketsRepository from "@/repositories/tickets-repository";
 
 async function getHotels(userId : number) {
@@ -15,6 +15,8 @@ async function getHotels(userId : number) {
     }
 
     const result = await repositoryHotel.getHotels()
+
+    if(result.length === 0) throw notFoundError()
     return result
 }
 
