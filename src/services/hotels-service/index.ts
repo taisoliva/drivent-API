@@ -1,0 +1,25 @@
+import repositoryHotel from "@/repositories/hotels-repository"
+import enrollmentsService from "../enrollments-service"
+import ticketsService from "../tickets-service";
+import { TicketStatus } from "@prisma/client";
+import { paymentRequired } from "@/errors";
+import ticketsRepository from "@/repositories/tickets-repository";
+
+async function getHotels(userId : number) {
+
+    const ticket = await ticketsService.getTicketByUser(userId)
+    const includesHotel = await ticketsRepository.getTicketTypeById(ticket.ticketTypeId)
+
+    if(ticket.status === TicketStatus.RESERVED || includesHotel.isRemote || !includesHotel.includesHotel ){
+        throw paymentRequired()
+    }
+
+    const result = await repositoryHotel.getHotels()
+    return result
+}
+
+const hotelService = {
+    getHotels
+}
+
+export default hotelService
