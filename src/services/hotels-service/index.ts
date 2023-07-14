@@ -27,7 +27,7 @@ async function getRooms(userId:number, hotelId:string) {
     }
 
     const hotel = await repositoryHotel.getHotelsById(parseInt(hotelId))
-    if(!hotel) throw badRequestError()
+    if(!hotel) throw notFoundError()
 
     await getHotels(userId)
 

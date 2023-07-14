@@ -158,12 +158,12 @@ describe("GET /hotels", () => {
 
     })
 
-    it("should respond with 400 when hotelId dont exists", async() =>{
+    it("should respond with 404 when hotelId dont exists", async() =>{
       const user = await createUser()
       const token = await generateValidToken(user)
       
       const response = await server.get("/hotels/1").set('Authorization', `Bearer ${token}`)
-      expect(response.status).toBe(httpStatus.BAD_REQUEST)
+      expect(response.status).toBe(httpStatus.NOT_FOUND)
 
     })
 
