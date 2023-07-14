@@ -2,7 +2,7 @@ import repositoryHotel from "@/repositories/hotels-repository"
 import enrollmentsService from "../enrollments-service"
 import ticketsService from "../tickets-service";
 import { TicketStatus } from "@prisma/client";
-import { notFoundError, paymentRequired } from "@/errors";
+import { badRequestError, notFoundError, paymentRequired } from "@/errors";
 import ticketsRepository from "@/repositories/tickets-repository";
 
 async function getHotels(userId : number) {
@@ -20,8 +20,24 @@ async function getHotels(userId : number) {
     return result
 }
 
+async function getRooms(userId:number, hotelId:string) {
+    
+    if(isNaN(parseInt(hotelId))){
+        throw badRequestError()
+    }
+
+    const hotel = await repositoryHotel.getHotelsById(parseInt(hotelId))
+    if(!hotel) throw badRequestError()
+
+    await getHotels(userId)
+
+    const hotelById = await repositoryHotel.getHotelWithRooms(parseInt(hotelId))
+    return hotelById
+}
+
 const hotelService = {
-    getHotels
+    getHotels,
+    getRooms
 }
 
 export default hotelService
