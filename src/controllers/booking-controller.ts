@@ -24,7 +24,7 @@ export async function createBooking (req: AuthenticatedRequest, res: Response){
 
     try {
         const result = await bookingService.createBooking(roomId, userId)
-        return res.status(httpStatus.OK).send(result)
+        return res.status(httpStatus.OK).send({ bookingId: result });
         
     } catch (error) {
         if(error.name === "BadRequestError"){
@@ -45,7 +45,7 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response){
 
     try {
         const result = await bookingService.updateBooking(bookingId, roomId, userId)
-        return res.status(httpStatus.OK).send(result)
+        return res.status(httpStatus.OK).send({ bookingId: result });
 
     } catch (error) {
         if(error.name === "BadRequestError"){

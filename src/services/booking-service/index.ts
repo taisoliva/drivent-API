@@ -7,12 +7,11 @@ import { TicketStatus } from "@prisma/client"
 async function BusinessRuler(userId: number, roomId: number) {
   const ticket = await ticketsService.getTicketByUser(userId)
   const includesHotel = await ticketsRepository.getTicketTypeById(ticket.ticketTypeId)
-  const userHasBooking = await bookingRepository.getBookingByUser(userId)
+  /* const userHasBooking = await bookingRepository.getBookingByUser(userId) */
 
   if (ticket.status === TicketStatus.RESERVED ||
     includesHotel.isRemote ||
-    !includesHotel.includesHotel ||
-    !userHasBooking) {
+    !includesHotel.includesHotel) {
     return true
   }
 }
@@ -59,8 +58,6 @@ async function updateBooking(bookingId: string, roomId: number, userId: number) 
   if (isNaN(parseInt(bookingId))) {
     throw badRequestError()
   }
-
-  await createBooking(roomId, userId)
 
   const result = await bookingRepository.updateBooking(parseInt(bookingId), roomId)
   return result.id
