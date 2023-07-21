@@ -4,65 +4,74 @@ import ticketsService from "../tickets-service"
 import ticketsRepository from "@/repositories/tickets-repository"
 import { TicketStatus } from "@prisma/client"
 
-async function BusinessRuler(userId: number) {
+async function BusinessRuler(userId: number, roomId: number) {
   const ticket = await ticketsService.getTicketByUser(userId)
   const includesHotel = await ticketsRepository.getTicketTypeById(ticket.ticketTypeId)
+  const userHasBooking = await bookingRepository.getBookingByUser(userId)
 
-    if(ticket.status === TicketStatus.RESERVED || includesHotel.isRemote || !includesHotel.includesHotel ){
-        return true
-    }
+  if (ticket.status === TicketStatus.RESERVED ||
+    includesHotel.isRemote ||
+    !includesHotel.includesHotel ||
+    !userHasBooking) {
+    return true
+  }
 }
 
 async function getBooking(userId: number) {
-    
+
   const result = await bookingRepository.getBookingByUser(userId)
 
   return {
-    "id":result.id,
+    "id": result.id,
     "Room": {
-        "id": result.Room.id,
-        "name": result.Room.name,
-        "capacity": result.Room.capacity,
-        "hotelId": result.Room.hotelId,
-        "createdAt": result.Room.createdAt,
-        "updatedAt": result.Room.updatedAt
+      "id": result.Room.id,
+      "name": result.Room.name,
+      "capacity": result.Room.capacity,
+      "hotelId": result.Room.hotelId,
+      "createdAt": result.Room.createdAt,
+      "updatedAt": result.Room.updatedAt
     }
   }
-  
+
 }
 
-async function createBooking(roomId: string, userId: number) {
+async function createBooking(roomId: number, userId: number) {
 
-  if(isNaN(parseInt(roomId))){
-    throw badRequestError()
-  }
+  const room = await bookingRepository.getRoom(roomId)
+  const howManyBookings = await bookingRepository.getBookingByRoomId(roomId)
+  const errorBusinessRule = await BusinessRuler(userId, roomId)
 
-  const room = await bookingRepository.getRoom(parseInt(roomId))
-  const howManyBookings = await bookingRepository.getBookingByRoomId(parseInt(roomId))
-  const errorBusinessRule = await BusinessRuler(userId)
+  if (!room || room.capacity === howManyBookings || errorBusinessRule) {
 
-  if(!room || room.capacity === howManyBookings || errorBusinessRule){
-
-    if(!room){
+    if (!room) {
       throw notFoundError()
     } else {
       throw forbiddenError()
     }
   }
 
-  const result = await bookingRepository.createBooking(parseInt(roomId), userId)
+  const result = await bookingRepository.createBooking(roomId, userId)
   return result.id
 }
 
-async function updateBooking() {
-  
+async function updateBooking(bookingId: string, roomId: number, userId: number) {
+
+  if (isNaN(parseInt(bookingId))) {
+    throw badRequestError()
+  }
+
+  await createBooking(roomId, userId)
+
+  const result = await bookingRepository.updateBooking(parseInt(bookingId), roomId)
+  return result.id
+
 }
 
 
 const bookingService = {
-    getBooking,
-    createBooking,
-    updateBooking
+  getBooking,
+  createBooking,
+  updateBooking
 }
 
 export default bookingService
