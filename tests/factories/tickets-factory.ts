@@ -44,3 +44,52 @@ export async function createTicketTypeWithHotel() {
     },
   });
 }
+
+export function builTicketType(isRemote: boolean, includesHotel: boolean){
+  return{
+      id: faker.datatype.number(),
+      name: faker.name.findName(),
+      price: faker.datatype.number(),
+      isRemote,
+      includesHotel,
+      createdAt: new Date(),
+      updatedAt: new Date()
+  }
+}
+
+export function buildTicketInputRemote () {
+    return {
+    id: faker.datatype.number(),
+    ticketTypeId: faker.datatype.number(),
+    TicketType : builTicketType(true, false),
+    enrollmentId: faker.datatype.number(),
+    status: TicketStatus.PAID,
+    createdAt: new Date(),
+    updatedAt: new Date()
+    }
+}
+
+
+export function buildTicketInputReserved(){
+  return{
+    id: faker.datatype.number(),
+    ticketTypeId: faker.datatype.number(),
+    TicketType : builTicketType(false, true),
+    enrollmentId: faker.datatype.number(),
+    status: TicketStatus.RESERVED,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+}
+
+export function buildTicketInputIncludesHotel(){
+  return{
+    id: faker.datatype.number(),
+    ticketTypeId: faker.datatype.number(),
+    TicketType : builTicketType(false, false),
+    enrollmentId: faker.datatype.number(),
+    status: TicketStatus.PAID,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+}

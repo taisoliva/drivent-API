@@ -4,41 +4,29 @@ import ticketsService from "../tickets-service"
 import ticketsRepository from "@/repositories/tickets-repository"
 import { TicketStatus } from "@prisma/client"
 
-async function BusinessRulerCreated(userId: number, roomId: number) {
+async function BusinessRuleCreated(userId: number) {
   const ticket = await ticketsService.getTicketByUser(userId)
-  const includesHotel = await ticketsRepository.getTicketTypeById(ticket.ticketTypeId)
-
-  if (ticket.status === TicketStatus.RESERVED ||
-    includesHotel.isRemote ||
-    !includesHotel.includesHotel) {
-    return true
+  if(ticket.status === TicketStatus.RESERVED){
+    throw forbiddenError()
+  } else if (ticket.TicketType.isRemote){
+    throw forbiddenError()
+  } else if (!ticket.TicketType.includesHotel){
+    throw forbiddenError()
   }
+ 
 }
 
-async function BusinessRulerUpdated(userId: number, roomId: number) {
-  const ticket = await ticketsService.getTicketByUser(userId)
-  const includesHotel = await ticketsRepository.getTicketTypeById(ticket.ticketTypeId)
-  const userHasBooking = await bookingRepository.getBookingByUser(userId) 
 
-  if (ticket.status === TicketStatus.RESERVED ||
-    includesHotel.isRemote ||
-    !includesHotel.includesHotel || !userHasBooking) {
-    return true
-  }
-}
-
-async function ErrorsCases (userId: number, roomId: number) {
+async function ErrorsCases(userId: number, roomId: number) {
   const room = await bookingRepository.getRoom(roomId)
   const howManyBookings = await bookingRepository.getBookingByRoomId(roomId)
-  const errorBusinessRule = await BusinessRulerCreated(userId, roomId)
 
-  if (!room || room.capacity === howManyBookings || errorBusinessRule) {
+  if (!room) {
+    throw notFoundError()
+  }
 
-    if (!room) {
-      throw notFoundError()
-    } else {
-      throw forbiddenError()
-    }
+  if (room.capacity === howManyBookings) {
+    throw forbiddenError()
   }
 }
 
@@ -47,7 +35,7 @@ async function getBooking(userId: number) {
 
   const result = await bookingRepository.getBookingByUser(userId)
 
-  if(!result){
+  if (!result) {
     throw notFoundError()
   }
 
@@ -67,6 +55,7 @@ async function getBooking(userId: number) {
 
 async function createBooking(roomId: number, userId: number) {
 
+  await BusinessRuleCreated(userId)
   await ErrorsCases(userId, roomId)
 
   const result = await bookingRepository.createBooking(roomId, userId)
@@ -79,7 +68,7 @@ async function updateBooking(bookingId: string, roomId: number, userId: number) 
     throw badRequestError()
   }
 
-  await BusinessRulerUpdated(roomId, userId)
+ 
   await ErrorsCases(userId, roomId)
 
   const result = await bookingRepository.updateBooking(parseInt(bookingId), roomId)
