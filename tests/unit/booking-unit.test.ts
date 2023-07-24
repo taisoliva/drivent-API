@@ -60,5 +60,15 @@ describe("Booking Service Unit Tests", () => {
           });
     })
 
+    it("should return a forbidden Error if user doesnt have a booking", async () => {
+        jest.spyOn(bookingRepository, "getBookingByUser").mockImplementationOnce((): any => {
+            return undefined
+        })
+        await expect(bookingService.updateBooking("1",1,1)).rejects.toEqual({
+            name: "ForbiddenError",
+            message: "you dont have permission",
+          });
+    })
+
 
 }) 

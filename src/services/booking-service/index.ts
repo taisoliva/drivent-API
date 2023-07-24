@@ -68,13 +68,12 @@ async function updateBooking(bookingId: string, roomId: number, userId: number) 
     throw badRequestError()
   }
 
+  const isUserBooking = await bookingRepository.getBookingByUser(userId)
+  if(!isUserBooking) throw forbiddenError()
+
   await ErrorsCases(userId, roomId)
 
   const result = await bookingRepository.updateBooking(parseInt(bookingId), roomId)
-
-  if(!result){
-    throw forbiddenError()
-  } 
   return result.id
 
 }
